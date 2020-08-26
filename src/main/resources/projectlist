@@ -1,0 +1,24 @@
+#1 Data is in a very rigid and inefficient format. Project 1, make the storage match the data size. This means coming up with a new binary file format, and adjusting all the reads and writes. We essentially have a key value store, but after doing this
+you can imagine all the work it would take to get a dynamic columnar database implemented.
+
+#2 In a big database, data is partitioned. So research and introduce a partitioning scheme, you can pretend like this single db is a big system (thik of the DB class as a service interface)- introduce into the partition manager some way to split data into different files.
+Put an arbitrary limit on the data file sizes  and ensure the incoming data is well distributed amoung your data files
+
+#3 Data is always retrived from the disk in this DB.  That is pretty inefficient.  There is  some golden rule about recently accessed data being accessed again.  Implement a caching schema over the data to avoid data being retrieved from disk. It's up to you how you want to
+do this - but remember to invalidate if when data changes and come up with some eviction process and make sure you dont run out of memory.   Make sure your caching and disk access are entirely indepednant because we will be changing the storage format soon, so don't couple these!.
+
+#4 Time to dive into the big problem.  Dudedb  requires that all the indexes fit into memory.  This could be considered a design over a limitation as many modern in-memory databases use this architecutre  and solve scaling by simply partition out the fleet, which we
+are not going to do in this project (although we sort of pretented that we did when we took step 2 to partition our data).  But this is for learning, and we are going to go with a non-in-memory database simply to develop the algorithms.  So what does that mean?  Well
+first, we are treating this db very similar to a WAL, we simply write the most recent data to the tail of the file and when we update the index postition to the most recent  When new data comes in, we add it to the end of the file and dont bother deleting the old values.
+So, what you want to do here is up to you.
+
+Want to do a B-tree?  Cool - you will have to develop data pages, fit your data into pages and then rearrange the layout on disk
+Want to do a SSTABLe or LSM Tree?  Cool, checkout how to keep an in-memory memtable with a flushing mecahnism that writes in the proper format.
+
+***one tip - do you have to undo the current storage?  Not necessarily.  If you think about it, this current schema is a log.  In Cassandra, the data flow is - write to the log, write to the memtable, eventually flush to sstable.
+In a future project when we start worrying about consistency, you will need the log.  so keep that in mind.
+
+#5 If you have made it this far, you have gone deeper into db's that most programmers will ever go.  So now what? Well, we dont have a way to delete data.  And depending on how you are storing your data it will vary in complexity.
+If you did a b-tree, then go ahead and delete the data on disk. If you did an LSM tree, look into tombstones.
+
+
