@@ -114,6 +114,10 @@ public class Partition {
         return DBFileFormat.deserialize(byteBlock);
     }
 
+    public int count(){
+        return keyToOffset.keySet().size();
+    }
+
     //writes the index to a file so it can be retrieved on startup.
     private void updateIndex(String key, long offset) {
         String data = key + "<^>" + offset;

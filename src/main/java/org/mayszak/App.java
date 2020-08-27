@@ -45,6 +45,10 @@ public class App
                     int recordcount = Integer.parseInt(scanner.next());
                     SampleDataUtil.prime(dbinstance, recordcount);
                     continue;
+                case "count" :
+                    int recordcnt = dbinstance.count();
+                    System.out.println("Total Sytem records:" + recordcnt);
+                    continue;
                 case "exit":
                     run = false;
                     dbinstance.close();

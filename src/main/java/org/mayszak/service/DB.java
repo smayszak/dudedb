@@ -45,6 +45,9 @@ public class DB {
         return disk.read(limit);
     }
 
+    public int count(){
+        return partitionManager.getPartition().count();
+    }
     //hook to safely close the db.
     public void close(){
         partitionManager.close();
@@ -65,6 +68,7 @@ public class DB {
         System.out.println("               get       key");
         System.out.println("               fetch     limit");
         System.out.println("               prime     recordcount");
+        System.out.println("               count");
         System.out.println("               exit");
         System.out.println();
         System.out.println("______________________________________________");
@@ -77,6 +81,8 @@ public class DB {
         System.out.println("       output: prints 1000 key/val records");
         System.out.println("           cmd: prime 1000");
         System.out.println("       output: adds 1000 key/val records to the db start at index 1 ending at 1000");
+        System.out.println("           cmd: count");
+        System.out.println("       output: prints total records in system");
         System.out.println("           cmd: exit");
         System.out.println("       output: safe shutdown");
         System.out.println();
