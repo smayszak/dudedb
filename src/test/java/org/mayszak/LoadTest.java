@@ -23,7 +23,7 @@ public class LoadTest {
         long timerstart = 0;
         long timerstop = 0;
         long runtime = 0;
-        int rcdcnt = 100000;
+        int rcdcnt = 1000;
         long file = currentTimeMillis();
         String dir = System.getProperty("user.home");
         String tempdata = dir + "/" + file;

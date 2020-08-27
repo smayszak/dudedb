@@ -43,7 +43,8 @@ public class App
                     continue;
                 case "prime" :
                     int recordcount = Integer.parseInt(scanner.next());
-                    SampleDataUtil.prime(dbinstance, recordcount);
+                    int offset = Integer.parseInt(scanner.next());
+                    SampleDataUtil.prime(dbinstance, recordcount, offset);
                     continue;
                 case "count" :
                     int recordcnt = dbinstance.count();

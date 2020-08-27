@@ -67,7 +67,7 @@ public class DB {
         System.out.println("               put       key     value");
         System.out.println("               get       key");
         System.out.println("               fetch     limit");
-        System.out.println("               prime     recordcount");
+        System.out.println("               prime     recordcount startidofffset");
         System.out.println("               count");
         System.out.println("               exit");
         System.out.println();
@@ -79,7 +79,7 @@ public class DB {
         System.out.println("       output: \"<json data>\"");
         System.out.println("           cmd: fetch 1000");
         System.out.println("       output: prints 1000 key/val records");
-        System.out.println("           cmd: prime 1000");
+        System.out.println("           cmd: prime 1000 1");
         System.out.println("       output: adds 1000 key/val records to the db start at index 1 ending at 1000");
         System.out.println("           cmd: count");
         System.out.println("       output: prints total records in system");

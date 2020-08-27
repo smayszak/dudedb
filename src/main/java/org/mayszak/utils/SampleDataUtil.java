@@ -80,8 +80,11 @@ public class SampleDataUtil {
         myword.append("'/>");
         return myword.toString();
     }
-
     public static HashMap<Integer, String> prime(DB dbinstance, int recordcount) throws IOException {
+        return prime(dbinstance, recordcount, 1);
+    }
+
+    public static HashMap<Integer, String> prime(DB dbinstance, int recordcount, int startoffset) throws IOException {
         HashMap<Integer, String> points = new HashMap<>();
         long timerstart = 0;
         long timerstop = 0;
@@ -100,9 +103,10 @@ public class SampleDataUtil {
         int samplerate = 25000;
         for(int i = 1; i <= recordcount; i++) {
             String aword = SampleDataUtil.getString(i);
+            int seededid = i + startoffset;
             //periodically measure performance to see if it degrades over time
-            if(i % samplerate == 0){
-                points.put(i,aword);
+            if(seededid % samplerate == 0){
+                points.put(seededid,aword);
                 timerstop = currentTimeMillis();
                 runtime  = timerstop - timerstart;
                 System.out.println("Insert time at " + i + " records: " + runtime + "ms");
@@ -110,18 +114,18 @@ public class SampleDataUtil {
                 System.out.println("Avg. insert time per record: " + precisionms + "ms");
                 if(precisionms > slowestavg)
                     slowestavg = precisionms;
-                if(fastestavg != 0 & fastestavg < precisionms)
+                if(fastestavg != 0 & fastestavg > precisionms)
                     fastestavg = precisionms;
 
                 if(runtime > slowestbatch)
                     slowestbatch = runtime;
-                if(fastestbatch != 0 & fastestbatch < runtime)
+                if(fastestbatch != 0 & fastestbatch > runtime)
                     fastestbatch = runtime;
 
                 //reset the timer...
                 timerstart = currentTimeMillis();
             }
-            dbinstance.put(String.valueOf(i), aword);
+            dbinstance.put(String.valueOf(seededid), aword);
         }
         System.out.println("Range:");
         System.out.println("Fastest avg insert: " + fastestavg + "ms slowest avg insert " + slowestavg + "ms");

@@ -2,15 +2,18 @@
 *It's not much, but at least it's housebroken*
 
 ---
-DudeDB is about as simple of a database as you can make. Simplicity aside, it actually works and performs fairly well.  
-It lacks even basic durabilty features but that is the point. I wanted to create a very simple database for developers who
+DudeDB is about as simple of a database as you can have. Simplicity aside, it actually works and performs fairly well.  
+It lacks  basic durabilty features, but that is the point. I wanted to create a very simple database for developers who
 want to learn advanced concepts by implementing them. For example, DudeDB uses a very rigid file format that uses way more data
-than it really needs to, so fix it!  I created DudeDB with extensibility in mind.  Big DB's always partition out data, in DudeDB, there
-is a partition manager that always returns a single partition - so extend it and implement your own partitioing schema!.  This is the point
-of DudeDB, a very simple db that has had all of the boring plumbing code written, leaving you with a project where you can do the fun stuff, 
-like migrate it to use a b-tree!
+than it really needs to, so fix it.  I created DudeDB with extensibility in mind.  Big DB's always partition out data, in DudeDB, there
+is a partition manager that always returns a single partition - so extend it and implement your own partitining schema.  This is the point
+of DudeDB, a very simple db that has all of the boring plumbing code written, leaving you with a project where you can do the fun stuff, 
+like migrate it to use a b-tree.
 
-The following are some ideas of how I would evolve dudedb, feel free to follow the list or come up with your own!
+DudeDB also comes with a load test / data generator.  If you run the program from the command line you can run the command 'prime 1000000 1' to seed your db with 1,000,000 records
+
+
+The following are some ideas of how I plan to evolve dudedb, feel free to follow the list or come up with your own:
 
 * Data is in a very rigid and inefficient format. Project 1, make the storage match the data size. This means coming up with a new binary file format, and adjusting all the reads and writes. We essentially have a key value store, but after doing this
 you can imagine all the work it would take to get a dynamic columnar database implemented.
