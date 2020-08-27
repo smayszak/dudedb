@@ -40,9 +40,9 @@ public class DB {
     }
 
     //this is like select *
-    public List<String[]> getAll() throws IOException {
+    public List<String[]> getAll(int limit) throws IOException {
         Partition disk = partitionManager.getPartition();
-        return disk.read();
+        return disk.read(limit);
     }
 
     //hook to safely close the db.
@@ -63,7 +63,8 @@ public class DB {
         System.out.println("  Commands list:");
         System.out.println("               put       key     value");
         System.out.println("               get       key");
-        System.out.println("               all");
+        System.out.println("               fetch     limit");
+        System.out.println("               prime     recordcount");
         System.out.println("               exit");
         System.out.println();
         System.out.println("______________________________________________");
@@ -72,8 +73,10 @@ public class DB {
         System.out.println("       output: ok");
         System.out.println("           cmd: get 1 ");
         System.out.println("       output: \"<json data>\"");
-        System.out.println("           cmd: all ");
-        System.out.println("       output: --all records printed key/val");
+        System.out.println("           cmd: fetch 1000");
+        System.out.println("       output: prints 1000 key/val records");
+        System.out.println("           cmd: prime 1000");
+        System.out.println("       output: adds 1000 key/val records to the db start at index 1 ending at 1000");
         System.out.println("           cmd: exit");
         System.out.println("       output: safe shutdown");
         System.out.println();

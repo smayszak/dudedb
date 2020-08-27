@@ -2,6 +2,7 @@ package org.mayszak;
 
 import org.mayszak.service.DB;
 import org.mayszak.utils.ConsoleColors;
+import org.mayszak.utils.SampleDataUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -33,11 +34,16 @@ public class App
                     String[] readdata = dbinstance.get(searchkey);
                     System.out.println(readdata[1]);
                     continue;
-                case "all" :
-                    List<String[]> all = dbinstance.getAll();
+                case "fetch" :
+                    int limit = Integer.parseInt(scanner.next());
+                    List<String[]> all = dbinstance.getAll(limit);
                     for(String[] item: all){
                         System.out.println("Key:" + item[0] + " val:" + item[1]);
                     }
+                    continue;
+                case "prime" :
+                    int recordcount = Integer.parseInt(scanner.next());
+                    SampleDataUtil.prime(dbinstance, recordcount);
                     continue;
                 case "exit":
                     run = false;

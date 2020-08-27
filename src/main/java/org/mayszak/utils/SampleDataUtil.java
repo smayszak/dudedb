@@ -1,12 +1,17 @@
-package org.mayszak;
+package org.mayszak.utils;
+
+import org.mayszak.service.DB;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Random;
 
-public class WordUtil {
+import static java.lang.System.currentTimeMillis;
+
+public class SampleDataUtil {
     private static HashMap<Integer, String> distinct = new HashMap<>();
     private static int distCount = 0;
     private static HashMap<Integer, String> common = new HashMap<>();
@@ -44,7 +49,7 @@ public class WordUtil {
     public static void generateAStrings(int howMany){
         words = new String[howMany+1];
         for(int i = 1; i <= howMany; i++){
-            words[i] = generateAString();
+            words[i] = generateAString().toLowerCase();
         }
     }
     public static String generateAString(){
@@ -52,7 +57,7 @@ public class WordUtil {
         int numwords = random.nextInt(10) + 1;
         int commonwords = random.nextInt(numwords);
         StringBuilder myword = new StringBuilder();
-        myword.append("<'constructedstring':'");
+        myword.append("<'importantmsg':'");
         for(int idx = 0; idx < numwords; idx ++){
             if(commonwords > 0) {
                 int dice = random.nextInt(2);
@@ -74,5 +79,53 @@ public class WordUtil {
         }
         myword.append("'/>");
         return myword.toString();
+    }
+
+    public static HashMap<Integer, String> prime(DB dbinstance, int recordcount) throws IOException {
+        HashMap<Integer, String> points = new HashMap<>();
+        long timerstart = 0;
+        long timerstop = 0;
+        long runtime = 0;
+        SampleDataUtil.loadWords();
+        //generate the payloads in advance so it does not affect our results.
+        System.out.println("Generating test data");
+        SampleDataUtil.generateAStrings(recordcount);
+        System.out.println("Done generating test data");
+        System.out.println("Starting write performance load test for " + recordcount + " records");
+        timerstart = currentTimeMillis();
+        float fastestavg = 0;
+        float slowestavg = 0;
+        float fastestbatch = 0;
+        float slowestbatch = 0;
+        int samplerate = 25000;
+        for(int i = 1; i <= recordcount; i++) {
+            String aword = SampleDataUtil.getString(i);
+            //periodically measure performance to see if it degrades over time
+            if(i % samplerate == 0){
+                points.put(i,aword);
+                timerstop = currentTimeMillis();
+                runtime  = timerstop - timerstart;
+                System.out.println("Insert time at " + i + " records: " + runtime + "ms");
+                float precisionms = (float)runtime / (float)samplerate;
+                System.out.println("Avg. insert time per record: " + precisionms + "ms");
+                if(precisionms > slowestavg)
+                    slowestavg = precisionms;
+                if(fastestavg != 0 & fastestavg < precisionms)
+                    fastestavg = precisionms;
+
+                if(runtime > slowestbatch)
+                    slowestbatch = runtime;
+                if(fastestbatch != 0 & fastestbatch < runtime)
+                    fastestbatch = runtime;
+
+                //reset the timer...
+                timerstart = currentTimeMillis();
+            }
+            dbinstance.put(String.valueOf(i), aword);
+        }
+        System.out.println("Range:");
+        System.out.println("Fastest avg insert: " + fastestavg + "ms slowest avg insert " + slowestavg + "ms");
+        System.out.println("Fastest batch insert: " + fastestbatch + "ms slowest batch insert " + slowestbatch + "ms");
+        return points;
     }
 }

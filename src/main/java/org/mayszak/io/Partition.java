@@ -83,10 +83,14 @@ public class Partition {
         return true;
     }
 
-    public List<String[]> read() throws IOException {
+    public List<String[]> read(int limit) throws IOException {
         List<String[]> results = new ArrayList();
+        int recordcount = 0;
         for(String key: keyToOffset.keySet()){
             results.add(read(key));
+            recordcount ++;
+            if(recordcount == limit)
+                break;
         }
          return results;
     }
