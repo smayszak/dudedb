@@ -1,5 +1,6 @@
 package org.mayszak;
 
+import org.mayszak.io.exceptions.UnknownPartitionException;
 import org.mayszak.service.DB;
 import org.mayszak.utils.ConsoleColors;
 import org.mayszak.utils.SampleDataUtil;
@@ -10,7 +11,7 @@ import java.util.Scanner;
 
 public class App 
 {
-    public static void main( String[] args ) throws IOException {
+    public static void main( String[] args ) throws IOException, UnknownPartitionException {
         //main used to create a command line loop to accept input.
         Scanner scanner = new Scanner(System.in);
         System.out.println();

@@ -1,5 +1,6 @@
 package org.mayszak.utils;
 
+import org.mayszak.io.exceptions.UnknownPartitionException;
 import org.mayszak.service.DB;
 
 import java.io.BufferedReader;
@@ -80,11 +81,11 @@ public class SampleDataUtil {
         myword.append("'/>");
         return myword.toString();
     }
-    public static HashMap<Integer, String> prime(DB dbinstance, int recordcount) throws IOException {
+    public static HashMap<Integer, String> prime(DB dbinstance, int recordcount) throws IOException, UnknownPartitionException {
         return prime(dbinstance, recordcount, 1);
     }
 
-    public static HashMap<Integer, String> prime(DB dbinstance, int recordcount, int startoffset) throws IOException {
+    public static HashMap<Integer, String> prime(DB dbinstance, int recordcount, int startoffset) throws IOException, UnknownPartitionException {
         HashMap<Integer, String> points = new HashMap<>();
         long timerstart = 0;
         long timerstop = 0;

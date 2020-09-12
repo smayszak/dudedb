@@ -1,18 +1,16 @@
 package org.mayszak.io;
 
+import org.mayszak.io.exceptions.UnknownPartitionException;
+
 import java.io.IOException;
+import java.util.List;
 
-public class PartitionManager {
-    //this version of partionmanager doesnt really do anything.
-    //it is implemented as a singleton (not very well BTW), but it holds the disk
-    //and assumes there is one disk file. this is a class inserted because at some point
-    //we will do interesting things in this area.
-
-    private Partition diskPartition = null;
+public class PartitionManager<K, P> implements AutoCloseable {
+    private final PartitionResolver<K, P> resolver;
     private static PartitionManager instance = null;
 
-    public PartitionManager(String filePath) throws IOException {
-        diskPartition = new Partition(filePath + ".data", filePath + ".index");
+    public PartitionManager(PartitionResolver<K, P> resolver)  {
+        this.resolver = resolver;
     }
 
     public static PartitionManager getPartitionManager() throws IOException {
@@ -21,19 +19,26 @@ public class PartitionManager {
     }
 
     public static PartitionManager getPartitionManager(String filePath) throws IOException {
-        if(instance==null){
-            instance = new PartitionManager(filePath);
+        return getPartitionManager(new BasicPartitionResolver(filePath));
+    }
+
+    public static <K, P> PartitionManager<K, P> getPartitionManager(PartitionResolver<K, P> resolver) {
+        if (instance == null) {
+            instance = new PartitionManager(resolver);
         }
         return instance;
     }
 
-    public Partition getPartition(){
-        return diskPartition;
+    public P getPartition(K key) throws UnknownPartitionException {
+        return resolver.resolveByKey(key);
+    }
+
+    public List<P> getAllPartitions() {
+        return resolver.listAllPartitions();
     }
 
     public void close(){
-        diskPartition.close();
-        diskPartition = null;
+        resolver.close();
         instance = null;
     }
 }
