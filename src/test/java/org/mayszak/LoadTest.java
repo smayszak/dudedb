@@ -1,5 +1,6 @@
 package org.mayszak;
 
+import org.mayszak.io.exceptions.UnknownPartitionException;
 import org.mayszak.service.DB;
 import org.mayszak.utils.ConsoleColors;
 import org.junit.Test;
@@ -18,7 +19,7 @@ public class LoadTest {
     //this is an all encomposing test. it loads a million records, records performance
     //and compares results match.  so treat this like a giant integ test.
     //it will also be interesting to record the metrics from this test before major refactors
-    public void loadupthedbandensurewegetrightvalues() throws IOException {
+    public void loadupthedbandensurewegetrightvalues() throws IOException, UnknownPartitionException {
         //setup test variables
         long timerstart = 0;
         long timerstop = 0;

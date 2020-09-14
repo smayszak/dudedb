@@ -2,14 +2,16 @@ package org.mayszak.service;
 
 import org.mayszak.io.Partition;
 import org.mayszak.io.PartitionManager;
+import org.mayszak.io.exceptions.UnknownPartitionException;
 import org.mayszak.utils.ConsoleColors;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DB {
 
-    PartitionManager partitionManager;
+    PartitionManager<String, Partition> partitionManager;
 
     public DB() throws IOException {
         printWelcome();
@@ -27,26 +29,38 @@ public class DB {
 
 
     ///simple key value put API
-    public boolean put(String id, String value) throws IOException {
-        Partition disk = partitionManager.getPartition();
+    public boolean put(String id, String value) throws IOException, UnknownPartitionException {
+        Partition disk = partitionManager.getPartition(id);
         return disk.write(id, value);
     }
 
     //get by a specific id API
-    public String[] get(String id) throws IOException {
-        Partition disk = partitionManager.getPartition();
+    public String[] get(String id) throws IOException, UnknownPartitionException {
+        Partition disk = partitionManager.getPartition(id);
         String[] data = disk.read(id);
         return data;
     }
 
     //this is like select *
     public List<String[]> getAll(int limit) throws IOException {
-        Partition disk = partitionManager.getPartition();
-        return disk.read(limit);
+        List<String[]> results = new ArrayList<>();
+
+        int stillNeeded = limit;
+
+        for (Partition partition : partitionManager.getAllPartitions()) {
+            List<String[]> read = partition.read(stillNeeded);
+            results.addAll(read);
+            stillNeeded -= read.size();
+            if (stillNeeded <= 0) {
+                break;
+            }
+        }
+
+        return results;
     }
 
     public int count(){
-        return partitionManager.getPartition().count();
+        return partitionManager.getAllPartitions().stream().mapToInt(p -> p.count()).sum();
     }
     //hook to safely close the db.
     public void close(){
